@@ -1,4 +1,5 @@
 # Hard coding Jonny Likes data
+# [Shape, Crust Size, Crust Shade, Filling Size, Filling Shade]
 feature_vecs = [["Circle", "Thick", "Gray", "Thick", "Dark"], #ex1
                 ["Circle", "Thick", "White", "Thick", "Dark"], #ex2
                 ["Triangle", "Thick", "White", "Thick", "Gray"], #ex3
