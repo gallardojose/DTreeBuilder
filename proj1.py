@@ -16,3 +16,24 @@ classes = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0] # 1==pos; 0==neg
 
 print(feature_vecs)
 print(classes)
+
+
+import math
+
+class_occurrence = {
+    0: 2,
+    1: 3,
+    5: 3
+}
+total = 8
+
+
+def entropy():
+    node_entropy = 0
+    for minwindepth in class_occurrence:
+        class_probability = class_occurrence[minwindepth] / total
+        node_entropy += -class_probability*math.log(class_probability)
+    return node_entropy
+
+
+print(entropy())
