@@ -1,0 +1,17 @@
+550 P1 Classified Set Info
+// From UCI ML Chess (King-Rook vs. King) Data Set (AKA "KRK")
+
+CSV = "Comma Separated Values" -- easy to read into a spreadsheet.
+
+Attribute Info, & Class Info:
+KRK Endgame Starting Positions
+1. White King file (column)
+2. White King rank (row)
+3. White Rook file
+4. White Rook rank
+5. Black King file
+6. Black King rank
+
+7. Class, Min Win Depth, or Draw if more than 16 moves are needed
+NB, some positions are already checkmate for Black, hence class Zero.
+
