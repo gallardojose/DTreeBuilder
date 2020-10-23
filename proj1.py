@@ -72,3 +72,8 @@ def entropy():
 
 
 print(entropy()) 
+
+# Formula to find information gain
+def FindInfoGain(entropy_set,entropy_attr,probab):
+    
+    return entropy_set-sum([entropy_attr[i]*probab[i] for i in range(len(entropy_attr))])
