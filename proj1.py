@@ -3,21 +3,19 @@ import math
 
 # function to read data file
 # parameter: data file name or path to data file
-# return: list of featre vectors and the corresponding list of classes
+# return: list of featre vectors and its corresponding class pair => [(feature_vector, class)]
 def read_file(filename):
     fea_vecs = []
-    cls = []
     file = open(filename, "r")
     for line in file:
         values = line.split(",")
-        fea_vecs.append(values[:6])
-        cls.append(values[6].replace("\n", ""))
-    return fea_vecs, cls
+        fea_vecs.append((values[:6], values[6].replace("\n", "")))
+    return fea_vecs
+       
         
-
 feature_vecs = []
-classes = []
-feature_vecs, classes = read_file("550-p1-cset-krk-1.csv")
+feature_vecs = read_file("550-p1-cset-krk-1.csv")
+print(feature_vecs)
 
 Training_Set = []
 Holdout_Set= []
@@ -70,10 +68,9 @@ def entropy():
         node_entropy += -class_probability*math.log(class_probability)
     return node_entropy
 
-
 print(entropy()) 
+
 
 # Formula to find information gain
 def FindInfoGain(entropy_set,entropy_attr,probab):
-    
     return entropy_set-sum([entropy_attr[i]*probab[i] for i in range(len(entropy_attr))])
