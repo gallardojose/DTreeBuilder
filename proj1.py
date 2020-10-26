@@ -2,16 +2,14 @@ import random
 import math
 
 # Each tree node consists of:
-#   1. a vector list => [([feature vector], class)..]
+#   1. a vector list => [([feature vector], class), ..]
 #   2. the selected attribute to split the vector list
-#   3. left child
-#   4. right child
+#   3. its children => {attribute value : node, ..}
 class node:
     def __init__(self):
         self.vecs = list()
         self.attr_split = ""
-        self.left = None
-        self.right = None
+        self.children = dict()
 
 
 # function to read data file
@@ -100,9 +98,39 @@ def attribute_to_split(root):
             class_occurrence[pair[1]] = 1
     total = len(root.vecs)
     root_ent = entropy(class_occurrence, total)
-    print(root_ent)
+    print("root entropy:", root_ent)
+
+    # Calculate average entropy for each attribute value
+    info_gain = list()
+    for i in range(len(root.vecs[0][0])):
+        class_occurence = dict()
+        total = dict()
+        for pair in root.vecs:
+            if pair[0][i] not in class_occurence:
+                class_occurence[pair[0][i]] = dict()
+                total[pair[0][i]] = 1
+            else:
+                total[pair[0][i]] += 1
+            if pair[1] in class_occurence[pair[0][i]]:
+                class_occurence[pair[0][i]][pair[1]] += 1
+            else:
+                class_occurence[pair[0][i]][pair[1]] = 1
+        entropy_list = list()
+        for attr_val in class_occurence:
+            entropy_list.append((total[attr_val], entropy(class_occurence[attr_val], total[attr_val])))
+        avg_ent = 0
+        for ent in entropy_list:
+            avg_ent += ent[0] / len(root.vecs) * ent[1]
+        info_gain.append(avg_ent)
+        print("The", i+1, "attribute's average entropy:", avg_ent)
+
+    # Calculate information gain for each attribute
+    for i in range(len(info_gain)):
+        info_gain[i] = root_ent - info_gain[i]
+        print("The", i+1, "attribute's information gain:", info_gain[i])
+
     # ...
 
 root = node()
-root.vecs = [([""], "pos"),([""], "pos"),([""], "neg"),([""], "neg"),([""], "pos"),([""], "neg"),([""], "pos"),([""], "pos"),]
+root.vecs = [(["big", "circle", "small"], "pos"),(["small", "circle", "small"], "pos"),(["big", "square", "small"], "neg"),(["big", "triangle", "small"], "neg"),(["big", "square", "big"], "pos"),(["small", "square", "small"], "neg"),(["small", "square", "big"], "pos"),(["big", "circle", "big"], "pos")]
 attribute_to_split(root)
