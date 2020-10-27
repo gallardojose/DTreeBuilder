@@ -89,7 +89,7 @@ def FindInfoGain(entropy_set,entropy_attr,probab):
 # Select best attribut to split a node
 # Take as input a tree node
 # When finish, tree node's property is modified accordingly
-def attribute_to_split(root, attrs):
+def split_node(root, attrs):
     # Calculate root entropy
     class_occurrence = dict()
     for pair in root.vecs:
@@ -126,6 +126,7 @@ def attribute_to_split(root, attrs):
         print("Attribute " + attrs[i] + "'s average entropy:", avg_ent)
 
     # Calculate information gain for each attribute
+    print()
     max_info = (0, 0)
     for i in range(len(info_gain)):
         info_gain[i] = root_ent - info_gain[i]
@@ -141,11 +142,12 @@ def attribute_to_split(root, attrs):
             root.children[pair[0][root.attr_split]] = node()
         root.children[pair[0][root.attr_split]].vecs.append(pair)
 
+
 attributes = ["crust size", "shape", "filling size"]
 root = node()
 root.vecs = [(["big", "circle", "small"], "pos"),(["small", "circle", "small"], "pos"),(["big", "square", "small"], "neg"),(["big", "triangle", "small"], "neg"),(["big", "square", "big"], "pos"),(["small", "square", "small"], "neg"),(["small", "square", "big"], "pos"),(["big", "circle", "big"], "pos")]
 print("\n\nTest Data:\n", root.vecs, "\n\nAttributes:\n", attributes, "\n")
-attribute_to_split(root, attributes)
+split_node(root, attributes)
 print("\nAfter splitting:")
 for child in root.children:
     print("Attribute " + child + " has vector list:\n", root.children[child].vecs, "\n")
