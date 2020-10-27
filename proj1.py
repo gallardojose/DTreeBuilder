@@ -4,11 +4,11 @@ import math
 # Each tree node consists of:
 #   1. a vector list => [([feature vector], class), ..]
 #   2. the selected attribute to split the vector list
-#   3. its children => {attribute value : node, ..}
+#   3. its children => {selected attribute value : node, ..}
 class node:
     def __init__(self):
         self.vecs = list()
-        self.attr_split = ""
+        self.attr_split = None
         self.children = dict()
 
 
@@ -25,6 +25,7 @@ def read_file(filename):
 
 
 feature_vecs = []
+attributes = ["White King file", " White King rank", "White Rook file", "White Rook rank", "Black King file", "Black King rank"]
 feature_vecs = read_file("550-p1-cset-krk-1.csv")
 
 Training_Set = []
@@ -88,7 +89,7 @@ def FindInfoGain(entropy_set,entropy_attr,probab):
 # Select best attribut to split a node
 # Take as input a tree node
 # When finish, tree node's property is modified accordingly
-def attribute_to_split(root):
+def attribute_to_split(root, attrs):
     # Calculate root entropy
     class_occurrence = dict()
     for pair in root.vecs:
@@ -122,15 +123,29 @@ def attribute_to_split(root):
         for ent in entropy_list:
             avg_ent += ent[0] / len(root.vecs) * ent[1]
         info_gain.append(avg_ent)
-        print("The", i+1, "attribute's average entropy:", avg_ent)
+        print("Attribute " + attrs[i] + "'s average entropy:", avg_ent)
 
     # Calculate information gain for each attribute
+    max_info = (0, 0)
     for i in range(len(info_gain)):
         info_gain[i] = root_ent - info_gain[i]
-        print("The", i+1, "attribute's information gain:", info_gain[i])
+        if info_gain[i] > max_info[1]:
+            max_info = (i, info_gain[i])
+        print("Attribute " + attrs[i] + "'s information gain:", info_gain[i])
+    print("Attribute " + attrs[max_info[0]] + " has the greatest information gain, so it is selected as the attribute to split")
 
-    # ...
+    # Updatte root node properties
+    root.attr_split = max_info[0]
+    for pair in root.vecs:
+        if pair[0][root.attr_split] not in root.children:
+            root.children[pair[0][root.attr_split]] = node()
+        root.children[pair[0][root.attr_split]].vecs.append(pair)
 
+attributes = ["crust size", "shape", "filling size"]
 root = node()
 root.vecs = [(["big", "circle", "small"], "pos"),(["small", "circle", "small"], "pos"),(["big", "square", "small"], "neg"),(["big", "triangle", "small"], "neg"),(["big", "square", "big"], "pos"),(["small", "square", "small"], "neg"),(["small", "square", "big"], "pos"),(["big", "circle", "big"], "pos")]
-attribute_to_split(root)
+print("\n\nTest Data:\n", root.vecs, "\n\nAttributes:\n", attributes, "\n")
+attribute_to_split(root, attributes)
+print("\nAfter splitting:")
+for child in root.children:
+    print("Attribute " + child + " has vector list:\n", root.children[child].vecs, "\n")
