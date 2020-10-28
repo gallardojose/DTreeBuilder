@@ -72,14 +72,6 @@ def entropy(class_occurrence, total):
         node_entropy += -class_probability*math.log(class_probability,2)
     return node_entropy
 
-co = {
-    0: 2,
-    1: 3,
-    5: 3
-}
-t = 8
-print(entropy(co,t))
-
 
 # Formula to find information gain
 def FindInfoGain(entropy_set,entropy_attr,probab):
@@ -133,7 +125,7 @@ def split_node(root, attrs):
         if info_gain[i] > max_info[1]:
             max_info = (i, info_gain[i])
         print("Attribute " + attrs[i] + "'s information gain:", info_gain[i])
-    print("Attribute " + attrs[max_info[0]] + " has the greatest information gain, so it is selected as the attribute to split")
+    print("Attribute " + attrs[max_info[0]] + " has the greatest information gain, so it is selected as the attribute to split\n")
 
     # Updatte root node properties
     root.attr_split = max_info[0]
@@ -142,7 +134,46 @@ def split_node(root, attrs):
             root.children[pair[0][root.attr_split]] = node()
         root.children[pair[0][root.attr_split]].vecs.append(pair)
 
+# check whether a node is a leaf node
+def isLeaf(root):
+    pair1 = root.vecs[0][1]
+    for pair in root.vecs:
+        if pair[1] != pair1:
+            return False
+    return True
 
+# build a decision tree using the provided root node
+def buildDTree(root):
+    queue = [root]
+    while len(queue) > 0:
+        curr = queue.pop(0)
+        split_node(curr, attributes)
+        for child in curr.children:
+            if not isLeaf(curr.children[child]):
+                queue.append(curr.children[child])
+
+# classified the provided vector using the provided rooted tree
+def classifier(root, feat_vec):
+    curr = root
+    while not isLeaf(curr):
+        if feat_vec[0][curr.attr_split] in curr.children:
+            curr = curr.children[feat_vec[0][curr.attr_split]]
+        else:
+            class_occurence = dict()
+            for pair in curr.vecs:
+                if pair[1] in class_occurence:
+                    class_occurence[pair[1]] += 1
+                else:
+                    class_occurence[pair[1]] = 1
+            max = (0, "")
+            for c in class_occurence:
+                if class_occurence[c] > max[0]:
+                    max = (class_occurence[c], c)
+            return max[1]
+
+    return curr.vecs[0][1]
+
+'''
 attributes = ["crust size", "shape", "filling size"]
 root = node()
 root.vecs = [(["big", "circle", "small"], "pos"),(["small", "circle", "small"], "pos"),(["big", "square", "small"], "neg"),(["big", "triangle", "small"], "neg"),(["big", "square", "big"], "pos"),(["small", "square", "small"], "neg"),(["small", "square", "big"], "pos"),(["big", "circle", "big"], "pos")]
@@ -151,3 +182,19 @@ split_node(root, attributes)
 print("\nAfter splitting:")
 for child in root.children:
     print("Attribute " + child + " has vector list:\n", root.children[child].vecs, "\n")
+'''
+
+attributes = ["White King file", " White King rank", "White Rook file", "White Rook rank", "Black King file", "Black King rank"]
+feature_vecs = read_file("550-p1-cset-krk-1.csv")
+
+sets_generator()
+print(len(feature_vecs))
+print(len(Training_Set))
+print(len(Holdout_Set))
+print(len(Validation_Set))
+
+root = node()
+root.vecs = Training_Set
+if not isLeaf(root): 
+    buildDTree(root)
+print(classifier(root, Holdout_Set[5]))
