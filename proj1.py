@@ -127,8 +127,20 @@ def split_node(root, attrs):
         print("Attribute " + attrs[i] + "'s information gain:", info_gain[i])
     print("Attribute " + attrs[max_info[0]] + " has the greatest information gain, so it is selected as the attribute to split\n")
 
+    # check if the selected attribute value produce the same size child
+    same_attr_val = True
+    max_info_index = max_info[0]
+    while same_attr_val:
+        val = root.vecs[0][0][max_info_index]
+        for pair in root.vecs:
+            if pair[0][max_info_index] != val:
+                same_attr_val = False
+        if same_attr_val:
+            print("\n\n", max_info_index, val, root.vecs, "\n\n")
+            max_info_index += 1
+
     # Updatte root node properties
-    root.attr_split = max_info[0]
+    root.attr_split = max_info_index
     for pair in root.vecs:
         if pair[0][root.attr_split] not in root.children:
             root.children[pair[0][root.attr_split]] = node()
@@ -234,7 +246,7 @@ print(len(Validation_Set))
 
 root = node()
 root.vecs = Training_Set
-if not isLeaf(root): 
+if not isLeaf(root):
     buildDTree(root)
 
 # print(classifier(root, Holdout_Set[5]))
