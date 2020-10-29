@@ -173,6 +173,45 @@ def classifier(root, feat_vec):
 
     return curr.vecs[0][1]
 
+
+def accuracy(tree_root, v_set):
+    correct = 0;
+    incorrect_indexes = []
+    i = 0
+    for pair in v_set:
+        if (classifier(tree_root, pair) == pair[1]):
+            correct += 1
+        else:
+            incorrect_indexes.append(i)
+        i += 1
+    return correct / len(v_set), incorrect_indexes
+
+
+def bagging_replacement(root, t_set, holdout_set):
+    union_set = t_set + holdout_set
+    final_t_set = []
+    final_holdout_set = []
+
+    for i in accuracy(root, holdout_set)[1]:
+        union_set.append(holdout_set[i])
+        union_set.append(holdout_set[i])
+
+    for i in t_set:
+        add_index = random.randint(0, len(t_set) - 1)
+        final_t_set.append(union_set[add_index])
+
+    # remove duplicates before removing items in final_t_set
+    for item in union_set:
+        if item not in final_holdout_set:
+            final_holdout_set.append(item)
+
+    for item in final_t_set:
+        if item in final_holdout_set:
+            final_holdout_set.remove(item)
+
+    return final_t_set, final_holdout_set
+
+
 '''
 attributes = ["crust size", "shape", "filling size"]
 root = node()
@@ -197,4 +236,17 @@ root = node()
 root.vecs = Training_Set
 if not isLeaf(root): 
     buildDTree(root)
-print(classifier(root, Holdout_Set[5]))
+
+# print(classifier(root, Holdout_Set[5]))
+print("Printing first dTree accuracy")
+print(accuracy(root, Validation_Set)[0])
+
+Training_Set, Holdout_Set = bagging_replacement(root, Training_Set, Holdout_Set)
+
+root = node()
+root.vecs = Training_Set
+if not isLeaf(root):
+    buildDTree(root)
+
+print("Printing second dTree accuracy")
+print(accuracy(root, Holdout_Set)[0])
