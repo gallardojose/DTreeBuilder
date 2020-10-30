@@ -262,3 +262,26 @@ if not isLeaf(root):
 
 print("Printing second dTree accuracy")
 print(accuracy(root, Holdout_Set)[0])
+def ensemble_classifier(data_set,root):
+    output=[]
+    for pair in data_set:
+        output.append(classifier(root,pair))
+    return output
+
+accuracy_tree1=accuracy(root, Validation_Set)[0]
+accuracy_tree2=accuracy(boostingT_root,Validation_Set)[0]
+
+print("Accuracy of decission tree : ",accuracy_tree1)
+print("Accuracy of Boosting tree : ",accuracy_tree2)
+data_set=[(['c', '2', 'a', '8', 'a', '1'], 'zero')]
+
+values=[]
+if(accuracy_tree1>accuracy_tree2):
+    print("As accuracy of decission tree is greater than boosting, giving classification of decission tree")
+    values=ensemble_classifier(data_set,root)
+else:
+    print("As accuracy of boosting is greater than decission tree, giving classification of boosting tree")
+    values=ensemble_classifier(data_set,boostingT_root)
+
+# Output of the classified class for the dataset entered
+print(values)
