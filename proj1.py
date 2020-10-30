@@ -273,7 +273,7 @@ accuracy_tree2=accuracy(boostingT_root,Validation_Set)[0]
 
 print("Accuracy of decission tree : ",accuracy_tree1)
 print("Accuracy of Boosting tree : ",accuracy_tree2)
-data_set=[(['c', '2', 'a', '8', 'a', '1'], 'zero')]
+data_set=[(['c', '2', 'a', '8', 'a', '1'], 'zero')] # Example dataset/ vector
 
 values=[]
 if(accuracy_tree1>accuracy_tree2):
