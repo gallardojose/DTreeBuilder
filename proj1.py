@@ -255,13 +255,13 @@ print(accuracy(root, Validation_Set)[0])
 
 Training_Set, Holdout_Set = bagging_replacement(root, Training_Set, Holdout_Set)
 
-root = node()
-root.vecs = Training_Set
-if not isLeaf(root):
-    buildDTree(root)
+boostingT_root = node()
+boostingT_root.vecs = Training_Set
+if not isLeaf(boostingT_root):
+    buildDTree(boostingT_root)
 
 print("Printing second dTree accuracy")
-print(accuracy(root, Holdout_Set)[0])
+print(accuracy(boostingT_root, Holdout_Set)[0])
 def ensemble_classifier(data_set,root):
     output=[]
     for pair in data_set:
