@@ -5,6 +5,7 @@
 import random
 import math
 
+
 # Each tree node consists of:
 #   1. a vector list => [([feature vector], class), ..]
 #   2. the selected attribute to split the vector list
@@ -22,9 +23,11 @@ class node:
 def read_file(filename):
     fea_vecs = []
     file = open(filename, "r")
+    ID = 0
     for line in file:
         values = line.split(",")
-        fea_vecs.append((values[:6], values[6].replace("\n", "")))
+        fea_vecs.append((values[:6], values[6].replace("\n", ""), ID))
+        ID += 1
     return fea_vecs
 
 
@@ -167,6 +170,8 @@ def buildDTree(root):
         for child in curr.children:
             if not isLeaf(curr.children[child]):
                 queue.append(curr.children[child])
+            else:
+                print(str(attributes[curr.attr_split]) + " attribute has leaf node " + str(child) + " with class: " + str(curr.children[child].vecs[0][1]))
 
 # classified the provided vector using the provided rooted tree
 def classifier(root, feat_vec):
@@ -228,6 +233,11 @@ def bagging_replacement(root, t_set, holdout_set):
     return final_t_set, final_holdout_set
 
 
+def print_ids(data_set):
+    for vector in data_set:
+        print(str(vector[2]) + " ", end='')
+    print("")
+
 '''
 attributes = ["crust size", "shape", "filling size"]
 root = node()
@@ -243,10 +253,12 @@ attributes = ["White King file", " White King rank", "White Rook file", "White R
 feature_vecs = read_file("550-p1-cset-krk-1.csv")
 
 sets_generator()
-print(len(feature_vecs))
-print(len(Training_Set))
-print(len(Holdout_Set))
-print(len(Validation_Set))
+print("Tree 1 Training Set IDs: ")
+print_ids(Training_Set)
+print("Tree 1 Holdout Set IDs: ")
+print_ids(Holdout_Set)
+print("Validation Set IDs")
+print_ids(Validation_Set)
 
 root = node()
 root.vecs = Training_Set
