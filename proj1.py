@@ -199,12 +199,15 @@ def accuracy(tree_root, v_set):
     correct = 0;
     incorrect_indexes = []
     i = 0
+    print("Incorrect classification for vectors: ")
     for pair in v_set:
         if (classifier(tree_root, pair) == pair[1]):
             correct += 1
         else:
             incorrect_indexes.append(i)
+            print(str(pair[2]) + " ", end='')
         i += 1
+    print("")
     return correct / len(v_set), incorrect_indexes
 
 
@@ -266,17 +269,25 @@ if not isLeaf(root):
     buildDTree(root)
 
 # print(classifier(root, Holdout_Set[5]))
-print("Printing first dTree accuracy")
+print("Printing incorrect holdout vectors and first dTree accuracy")
 print(accuracy(root, Validation_Set)[0])
 
 Training_Set, Holdout_Set = bagging_replacement(root, Training_Set, Holdout_Set)
+print("-------------------------------------------------------------------------------------------------------------")
+print("-------------------------------------------------------------------------------------------------------------")
+print("Tree 2 Training Set IDs: ")
+print_ids(Training_Set)
+print("Tree 2 Holdout Set IDs: ")
+print_ids(Holdout_Set)
+print("Validation Set IDs")
+print_ids(Validation_Set)
 
 boostingT_root = node()
 boostingT_root.vecs = Training_Set
 if not isLeaf(boostingT_root):
     buildDTree(boostingT_root)
 
-print("Printing second dTree accuracy")
+print("Printing incorrect holdout vectors and second dTree accuracy")
 print(accuracy(boostingT_root, Holdout_Set)[0])
 def ensemble_classifier(data_set,root):
     output=[]
@@ -284,20 +295,25 @@ def ensemble_classifier(data_set,root):
         output.append(classifier(root,pair))
     return output
 
+
+print("Printing incorrect vectors in validation classification & accuracy")
 accuracy_tree1=accuracy(root, Validation_Set)[0]
 accuracy_tree2=accuracy(boostingT_root,Validation_Set)[0]
 
-print("Accuracy of decission tree : ",accuracy_tree1)
-print("Accuracy of Boosting tree : ",accuracy_tree2)
-data_set=[(['c', '2', 'a', '8', 'a', '1'], 'zero')] # Example dataset/ vector
+
+print("Validation accuracy of 1st decision tree : " + str(accuracy_tree1))
+print("Validation accuracy of Boosting tree : " + str(accuracy_tree2))
+vector_test=[(['c', '2', 'a', '8', 'a', '1'], 'zero')] # Example dataset/ vector
 
 values=[]
 if(accuracy_tree1>accuracy_tree2):
-    print("As accuracy of decission tree is greater than boosting, giving classification of decission tree")
-    values=ensemble_classifier(data_set,root)
+    print("As accuracy of 1st decission tree is greater than boosting, giving classification to 1st decission tree (greater weight)")
+    print("Accuracy of ensemble is equal to 1st decision tree: " + str(accuracy_tree1))
+    values=ensemble_classifier(vector_test ,root)
 else:
-    print("As accuracy of boosting is greater than decission tree, giving classification of boosting tree")
-    values=ensemble_classifier(data_set,boostingT_root)
+    print("As accuracy of boosting is greater than 1st decission tree, giving classification to boosting tree (greater weight)")
+    print("Accuracy of ensemble is equal to boosting tree: " + str(accuracy_tree2))
+    values=ensemble_classifier(vector_test ,boostingT_root)
 
 # Output of the classified class for the dataset entered
-print(values)
+print("Classification of vector: " + str(vector_test) + " is " + str(values))
