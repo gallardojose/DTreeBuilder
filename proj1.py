@@ -1,3 +1,7 @@
+# Author: Hitesh Bhavsar, Jose Gallardo, Amish Mathur, Mike Mai
+# This file contains all the code required for the project: from reading an input .csv file to building DTrees and giving the classification of the decision tree based on thier computed accurracies.
+# All functions in this file also have comments explaining in detail the purpose of thier use and what they intended to do when called given the correct parameters.
+
 import random
 import math
 
